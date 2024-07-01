@@ -23,6 +23,30 @@ services:
       /data/singapore.osrm
       "
 
+  custom_osrm:
+    image: osrm/osrm-backend
+    volumes:
+      - ./osm:/osm
+      - ./profiles:/profiles
+    networks:
+      - default
+    ports:
+      - 9000:5000
+    restart: unless-stopped
+    command: >
+      bash -c "
+      osrm-extract -p /profiles/foot.lua /osm/custom.osm &&
+      osrm-partition /osm/custom.osrm &&
+      osrm-customize /osm/custom.osrm &&
+      osrm-routed \
+      --algorithm mld \
+      --max-matching-size 20000 \
+      --max-viaroute-size 20000 \
+      --max-trip-size 20000 \
+      --max-table-size 20000 \
+      /data/custom.osrm
+      "  
+
 networks:
   default:
     driver: bridge
