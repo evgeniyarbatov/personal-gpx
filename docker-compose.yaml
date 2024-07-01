@@ -26,7 +26,7 @@ services:
   custom_osrm:
     image: osrm/osrm-backend
     volumes:
-      - ./osm:/osm
+      - ./osm:/data
       - ./profiles:/profiles
     networks:
       - default
@@ -35,9 +35,9 @@ services:
     restart: unless-stopped
     command: >
       bash -c "
-      osrm-extract -p /profiles/foot.lua /osm/custom.osm &&
-      osrm-partition /osm/custom.osrm &&
-      osrm-customize /osm/custom.osrm &&
+      osrm-extract -p /profiles/foot.lua /data/custom.osm && 
+      osrm-partition /data/custom.osrm && 
+      osrm-customize /data/custom.osrm && 
       osrm-routed \
       --algorithm mld \
       --max-matching-size 20000 \
